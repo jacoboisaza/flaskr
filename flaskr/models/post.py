@@ -1,10 +1,8 @@
 """Post Model."""
 from flask import g
-# from flaskr.models.user import UserModel
 from werkzeug.security import check_password_hash
 from datetime import datetime
 from sqlalchemy import desc
-import json
 
 from flaskr import db
 
