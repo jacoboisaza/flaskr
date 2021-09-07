@@ -1,0 +1,16 @@
+click
+flake8
+Flask
+Flask-SQLAlchemy
+greenlet
+itsdangerous
+Jinja2
+MarkupSafe
+mccabe
+psycopg2-binary
+pycodestyle
+pydocstyle
+pyflakes
+snowballstemmer
+SQLAlchemy
+Werkzeug
