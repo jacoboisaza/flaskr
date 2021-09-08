@@ -38,7 +38,6 @@ def create_app():
         pass
 
     # register the database commands
-    # from flaskr import db
     db.init_app(app)
 
     # apply the blueprints to the app

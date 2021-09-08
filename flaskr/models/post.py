@@ -1,6 +1,5 @@
 """Post Model."""
 from flask import g
-from werkzeug.security import check_password_hash
 from datetime import datetime
 from sqlalchemy import desc
 
@@ -71,9 +70,8 @@ class PostModel(db.Model):
     @staticmethod
     def all_by_user_id(author_id):
         """Get all posts filtered by author_id."""
-        posts = PostModel.query.filter(
+        return PostModel.query.filter(
             PostModel.author_id == author_id
         ).order_by(
             desc(PostModel.created)
         ).all()
-        return [post.dump() for post in posts]
