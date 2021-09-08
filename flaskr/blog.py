@@ -73,28 +73,16 @@ def create():
 @login_required
 def update(post_id):
     """Update a post if the current user is the author."""
-    post = get_post(post_id)
+    post_model = get_post(post_id)
 
     if request.method == "POST":
-        title = request.form["title"]
-        body = request.form["body"]
-        error = None
+        post_model.update(
+            title=request.form["title"],
+            body=request.form["body"]
+        )
+        return redirect(url_for("blog.index"))
 
-        if not title:
-            error = "Title is required."
-
-        if error is not None:
-            flash(error)
-        else:
-
-            PostModel.update(
-                post_id=post_id,
-                title=title,
-                body=body
-            )
-            return redirect(url_for("blog.index"))
-
-    return render_template("blog/update.html", post=post.dump())
+    return render_template("blog/update.html", post=post_model.dump())
 
 
 @bp.route("/<int:post_id>/delete", methods=("POST",))
@@ -105,6 +93,5 @@ def delete(post_id):
     Ensures that the post exists and that the logged in user is the
     author of the post.
     """
-    get_post(post_id)
-    PostModel.delete(post_id)
+    get_post(post_id).delete()
     return redirect(url_for("blog.index"))

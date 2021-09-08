@@ -56,27 +56,18 @@ def register():
     password for security.
     """
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        error = None
-
-        if not username:
-            error = "Username is required."
-        elif not password:
-            error = "Password is required."
-
-        if error is None:
-            try:
-                UserModel.add(username=username, password=password)
-            except IntegrityError:
-                # The username was already taken, which caused the
-                # commit to fail. Show a validation error.
-                error = f"User {username} is already registered."
-            except Exception:
-                traceback.print_exc()
-            else:
-                # Success, go to the login page.
-                return redirect(url_for("auth.login"))
+        try:
+            UserModel.add(
+                username=request.form["username"],
+                password=request.form["password"]
+            )
+        except IntegrityError:
+            # The username was already taken, which caused the
+            # commit to fail. Show a validation error.
+            error = f"User {request.form['username']} is already registered."
+        else:
+            # Success, go to the login page.
+            return redirect(url_for("auth.login"))
 
         flash(error)
 
@@ -87,15 +78,15 @@ def register():
 def login():
     """Log in a registered user by adding the user id to the session."""
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
         error = None
         user_model = UserModel.query.filter_by(
-            username=username
+            username=request.form["username"]
         ).first()
         if user_model is None:
             error = "Incorrect username."
-        elif not user_model.verify_password(password):
+        elif not user_model.verify_password(
+            request.form["password"]
+        ):
             error = "Incorrect password."
         if error is None:
             # store the user id in a new session and return to the index

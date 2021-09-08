@@ -26,14 +26,15 @@ class UserModel(db.Model):
         backref="author"
     )
 
-    @classmethod
-    def add(class_, username, password):
+    @staticmethod
+    def add(**user_data):
         """Create a new user in DB and commit it."""
-        new_user_model = class_(
-            username=username,
-            password=generate_password_hash(password)
+        if user_data.get("id"):
+            return False
+        user_data['password'] = generate_password_hash(user_data['password'])
+        db.session.add(
+            UserModel().load(user_data)
         )
-        db.session.add(new_user_model)
         db.session.commit()
 
     def verify_password(self, password):
@@ -41,8 +42,12 @@ class UserModel(db.Model):
         return check_password_hash(self.password, password)
 
     def dump(self):
-        """Serialize for model object."""
-        dict_ = {}
-        for key in self.__mapper__.c.keys():
-            dict_[key] = getattr(self, key)
-        return dict_
+        """Serialize from model object to dict."""
+        from flaskr.schemas.user import UserSchema
+        return UserSchema().dump(self)
+
+    @staticmethod
+    def load(post_data):
+        """Deserialize from dict to model object."""
+        from flaskr.schemas.user import UserSchema
+        return UserSchema().load(post_data)

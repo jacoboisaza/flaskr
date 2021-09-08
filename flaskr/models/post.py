@@ -34,44 +34,40 @@ class PostModel(db.Model):
     )
 
     def dump(self):
-        """Serialize model object."""
-        dict_ = {}
-        for key in self.__mapper__.c.keys():
-            dict_[key] = getattr(self, key)
-        return dict_
+        """Serialize from model object to dict."""
+        from flaskr.schemas.post import PostSchema
+        return PostSchema().dump(self)
+
 
     @staticmethod
-    def add(title, body):
+    def add(**post_data):
         """Create a new post in DB and commit it."""
-        new_post_model = PostModel(
-            title=title,
-            body=body,
-            author_id=g.user["id"]
+        if PostModel().query.get(post_data.get("id")):
+            return False
+        post_data['author_id'] = g.user["id"]
+        db.session.add(
+            PostModel().load(post_data)
         )
-        db.session.add(new_post_model)
         db.session.commit()
 
-    @staticmethod
-    def update(post_id, title, body):
+    def update(self, title, body):
         """Update a post in DB and commit it."""
-        post_model = PostModel.query.get(post_id)
-        post_model.title = title
-        post_model.body = body
-        db.session.add(post_model)
+        if not PostModel().query.get(self.id):
+            return False
+        self.title = title
+        self.body = body
+        db.session.add(self)
         db.session.commit()
 
-    @staticmethod
-    def delete(post_id):
+    def delete(self):
         """Delete a post in DB and commit it."""
-        post_model = PostModel.query.get(post_id)
-        db.session.delete(post_model)
+        if not PostModel().query.get(self.id):
+            return False
+        db.session.delete(self)
         db.session.commit()
 
     @staticmethod
-    def all_by_user_id(author_id):
-        """Get all posts filtered by author_id."""
-        return PostModel.query.filter(
-            PostModel.author_id == author_id
-        ).order_by(
-            desc(PostModel.created)
-        ).all()
+    def load(post_data):
+        """Deserialize from dict to model object."""
+        from flaskr.schemas.post import PostSchema
+        return PostSchema().load(post_data)

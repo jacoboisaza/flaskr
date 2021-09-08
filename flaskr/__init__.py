@@ -3,8 +3,10 @@ import os
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 
 db = SQLAlchemy()
+ma = Marshmallow()
 
 
 def create_app():
@@ -39,6 +41,9 @@ def create_app():
 
     # register the database commands
     db.init_app(app)
+
+    # register the app into the sqlalchemy module
+    ma.init_app(app)
 
     # apply the blueprints to the app
     from flaskr import auth, blog
