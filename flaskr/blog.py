@@ -40,11 +40,9 @@ def get_post(post_id, check_author=True):
     post_model = PostModel.query.get(post_id)
     if post_model is None:
         abort(404, f"Post id {post_id} doesn't exist.")
-    post = post_model.dump()
-    if check_author and post["author_id"] != g.user["id"]:
+    elif check_author and post_model.author_id != g.user["id"]:
         abort(403, f"you are not the author of the post with id {post_id}.")
-    post["username"] = post_model.author.dump()["username"]
-    return post
+    return post_model
 
 
 @bp.route("/create", methods=("GET", "POST"))
@@ -96,7 +94,7 @@ def update(post_id):
             )
             return redirect(url_for("blog.index"))
 
-    return render_template("blog/update.html", post=post)
+    return render_template("blog/update.html", post=post.dump())
 
 
 @bp.route("/<int:post_id>/delete", methods=("POST",))
