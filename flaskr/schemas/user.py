@@ -12,7 +12,7 @@ class UserSchema(ma.SQLAlchemySchema):
         """Serializer configurations."""
 
         model = UserModel
-        load_instance = True  # Optional: deserialize to model instances
+        load_instance = True
 
     id = auto_field()
     username = auto_field()

@@ -12,7 +12,7 @@ class PostSchema(ma.SQLAlchemySchema):
         """Serializer configurations."""
 
         model = PostModel
-        load_instance = True  # Optional: deserialize to model instances
+        load_instance = True
         datetimeformat = '%Y-%m-%d'
 
     id = auto_field()

@@ -3,19 +3,11 @@
 
 DROP TABLE IF EXISTS "user" CASCADE;
 DROP TABLE IF EXISTS "report" CASCADE;
-DROP TABLE IF EXISTS "post" CASCADE;
-DROP TABLE IF EXISTS "reported_post" CASCADE;
 
 CREATE TABLE "user" (
   id serial PRIMARY KEY,
   username TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL
-);
-
-CREATE TABLE "report" (
-  id serial PRIMARY KEY,
-  author_id INTEGER NOT NULL,
-  FOREIGN KEY (author_id) REFERENCES "user" (id)
 );
 
 CREATE TABLE "post" (
