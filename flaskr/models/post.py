@@ -32,12 +32,15 @@ class PostModel(db.Model):
         db.Integer,
         db.ForeignKey('user.id')
     )
+    bookmarkers = db.relationship(
+        'BookmarkModel',
+        backref='post'
+    )
 
     def dump(self):
         """Serialize from model object to dict."""
         from flaskr.schemas.post import PostSchema
         return PostSchema().dump(self)
-
 
     @staticmethod
     def add(**post_data):

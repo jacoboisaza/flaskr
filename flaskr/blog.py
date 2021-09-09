@@ -8,9 +8,15 @@ from flask import (
     request,
     url_for
 )
-from flaskr.models.post import PostModel
 from werkzeug.exceptions import abort
+import json
 
+from flaskr.models.post import PostModel
+from flaskr.schemas.post import PostSchema
+from flaskr.models.user import UserModel
+from flaskr.schemas.user import UserSchema
+from flaskr.models.bookmark import BookmarkModel
+from flaskr.schemas.bookmark import BookmarkSchema
 from flaskr.auth import login_required
 
 bp = Blueprint("blog", __name__)
@@ -19,9 +25,16 @@ bp = Blueprint("blog", __name__)
 @bp.route("/")
 def index():
     """Show all the posts, most recent first."""
+    posts = PostSchema(many=True).dump(
+        PostModel.query.all()
+    )
+    bookmarks = BookmarkSchema(many=True).dump(
+        BookmarkModel.query.all()
+    )
     return render_template(
         "blog/index.html",
-        posts=[post.dump() for post in PostModel.query.all()]
+        posts=posts,
+        bookmarks=json.dumps(sorted(bookmarks), indent=4)
     )
 
 

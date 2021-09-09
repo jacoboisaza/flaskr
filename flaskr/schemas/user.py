@@ -16,5 +16,23 @@ class UserSchema(ma.SQLAlchemySchema):
 
     id = auto_field()
     username = auto_field()
-    password = auto_field()
-    posts = auto_field()
+    password = auto_field(load_only=True)
+    bookmarks = ma.Nested(
+        'BookmarkSchema',
+        many=True,
+        only=(
+            'id',
+            'created',
+            'post',
+        )
+    )
+    posts = ma.Nested(
+        'PostSchema',
+        many=True,
+        only=(
+            'id',
+            'title',
+            'body',
+            'created',
+        )
+    )

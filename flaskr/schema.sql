@@ -18,3 +18,12 @@ CREATE TABLE "post" (
   body TEXT NOT NULL,
   FOREIGN KEY (author_id) REFERENCES "user" (id)
 );
+
+CREATE TABLE "bookmark" (
+  id serial PRIMARY KEY,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  user_id INTEGER NOT NULL,
+  post_id INTEGER NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES "user" (id),
+  FOREIGN KEY (post_id) REFERENCES "post" (id)
+);

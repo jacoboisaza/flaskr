@@ -1,5 +1,7 @@
 """Post Schema."""
 from marshmallow_sqlalchemy import auto_field
+from marshmallow import fields
+from datetime import datetime as dt
 
 from flaskr.models.post import PostModel
 from flaskr import ma
@@ -19,4 +21,19 @@ class PostSchema(ma.SQLAlchemySchema):
     title = auto_field()
     body = auto_field()
     created = auto_field()
-    author_id = auto_field()
+    bookmarkers = ma.Nested(
+        'BookmarkSchema',
+        many=True,
+        only=(
+            'id',
+            'created',
+            'user',
+        )
+    )
+    author = ma.Nested(
+        'UserSchema',
+        only=(
+            'id',
+            'username',
+        )
+    )

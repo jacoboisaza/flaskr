@@ -25,6 +25,10 @@ class UserModel(db.Model):
         'PostModel',
         backref="author"
     )
+    bookmarks = db.relationship(
+        'BookmarkModel',
+        backref='user'
+    )
 
     @staticmethod
     def add(**user_data):

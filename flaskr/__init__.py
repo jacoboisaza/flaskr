@@ -58,3 +58,8 @@ def create_app():
     app.add_url_rule("/", endpoint="index")
 
     return app
+
+
+# Force class models and schemas registration at startup.
+from flaskr import models
+from flaskr import schemas
