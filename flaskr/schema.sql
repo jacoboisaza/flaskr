@@ -18,11 +18,3 @@ CREATE TABLE "post" (
   body TEXT NOT NULL,
   FOREIGN KEY (author_id) REFERENCES "user" (id)
 );
-
-CREATE TABLE "reported_post" (
-  id serial PRIMARY KEY,
-  report_id INTEGER NOT NULL,
-  FOREIGN KEY (report_id) REFERENCES "report" (id),
-  post_id INTEGER NOT NULL,
-  FOREIGN KEY (post_id) REFERENCES "post" (id)
-);
