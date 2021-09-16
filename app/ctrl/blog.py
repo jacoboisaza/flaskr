@@ -1,6 +1,5 @@
 """Blog Module."""
 from flask import (
-    Blueprint,
     flash,
     g,
     redirect,
@@ -11,20 +10,20 @@ from flask import (
 from werkzeug.exceptions import abort
 import json
 
-from flaskr.app.models.family_leader import FamilyLeaderModel
-from flaskr.app.schemas.family_leader import FamilyLeaderSchema
-from flaskr.app.models.family import FamilyModel
-from flaskr.app.schemas.family import FamilySchema
-from flaskr.app.models.position import PositionModel
-from flaskr.app.schemas.position import PositionSchema
-from flaskr.app.models.post import PostModel
-from flaskr.app.schemas.post import PostSchema
-from flaskr.app.models.user import UserModel
-from flaskr.app.schemas.user import UserSchema
-from flaskr.app.models.bookmark import BookmarkModel
-from flaskr.app.schemas.bookmark import BookmarkSchema
-from flaskr.app.ctrl.auth import login_required
-from flaskr.app import bp
+from app.models.family_leader import FamilyLeaderModel
+from app.schemas.family_leader import FamilyLeaderSchema
+from app.models.family import FamilyModel
+from app.schemas.family import FamilySchema
+from app.models.position import PositionModel
+from app.schemas.position import PositionSchema
+from app.models.post import PostModel
+from app.schemas.post import PostSchema
+from app.models.user import UserModel
+from app.schemas.user import UserSchema
+from app.models.bookmark import BookmarkModel
+from app.schemas.bookmark import BookmarkSchema
+from app.ctrl.auth import login_required
+from app import bp
 
 
 @bp.route("/")

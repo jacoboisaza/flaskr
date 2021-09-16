@@ -1,8 +1,8 @@
 """Family Schema."""
 from marshmallow_sqlalchemy import auto_field
 
-from flaskr.app.models.family import FamilyModel
-from flaskr import ma
+from app.models.family import FamilyModel
+from app.app_factory import ma
 
 
 class FamilySchema(ma.SQLAlchemySchema):

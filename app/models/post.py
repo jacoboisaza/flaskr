@@ -2,7 +2,7 @@
 from flask import g
 from datetime import datetime
 
-from flaskr import db
+from app.app_factory import db
 
 
 class PostModel(db.Model):
@@ -47,7 +47,7 @@ class PostModel(db.Model):
         if post_data.get("id"):
             return False
         post_data['author_id'] = g.user["id"]
-        from flaskr.app.schemas.post import PostSchema
+        from app.schemas.post import PostSchema
         post_model = PostSchema().load(
             post_data
         )

@@ -1,7 +1,5 @@
 """Authentication Module."""
 import functools
-import traceback
-from flask import Blueprint
 from flask import flash
 from flask import g
 from flask import redirect
@@ -12,11 +10,10 @@ from flask import url_for
 from sqlalchemy.exc import (
     IntegrityError
 )
-import json
 
-from flaskr.app.models.user import UserModel
-from flaskr.app.schemas.user import UserSchema
-from flaskr.app import bp
+from app.models.user import UserModel
+from app.schemas.user import UserSchema
+from app import bp
 
 
 def login_required(view):

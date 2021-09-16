@@ -1,10 +1,8 @@
 """Post Schema."""
 from marshmallow_sqlalchemy import auto_field
-from marshmallow import fields
-from datetime import datetime as dt
 
-from flaskr.app.models.post import PostModel
-from flaskr import ma
+from app.models.post import PostModel
+from app.app_factory import ma
 
 
 class PostSchema(ma.SQLAlchemySchema):

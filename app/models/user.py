@@ -1,7 +1,7 @@
 """User Model."""
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from flaskr import db
+from app.app_factory import db
 
 
 class UserModel(db.Model):
@@ -57,7 +57,7 @@ class UserModel(db.Model):
         if user_data.get("id"):
             return False
         user_data['password'] = generate_password_hash(user_data['password'])
-        from flaskr.app.schemas.user import UserSchema
+        from app.schemas.user import UserSchema
         user_model = UserSchema().load(user_data)
         db.session.add(user_model)
         db.session.commit()

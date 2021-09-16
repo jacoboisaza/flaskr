@@ -1,8 +1,8 @@
 """User Schema."""
 from marshmallow_sqlalchemy import auto_field
 
-from flaskr.app.models.user import UserModel
-from flaskr import ma
+from app.models.user import UserModel
+from app.app_factory import ma
 
 
 class UserSchema(ma.SQLAlchemySchema):

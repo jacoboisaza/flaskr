@@ -5,24 +5,22 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 
+# Explicit instantiate the sqlalchemy and marshmallow modules
+# before models and schemas wich needs it.
 db = SQLAlchemy()
 ma = Marshmallow()
 
-# Explicit models and schemas registration after instantiate the sqlalchemy and marshmallow modules.
-from flaskr.app import models
-from flaskr.app import schemas
-from flaskr.app import ctrl
+from app import models
+from app import schemas
+from app import ctrl
 
 
 def create_app():
     """Create and configure an instance of the Flask application."""
-    app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
+    new_app = Flask(__name__, instance_relative_config=True)
+    new_app.config.from_mapping(
         # a default secret that should be overridden by instance config
         SECRET_KEY="dev",
-
-        # store the database in the instance folder
-        # DATABASE=os.path.join(app.instance_path, "flaskr.sqlite"),
 
         DATABASE={
             'dbname': 'flaskr',
@@ -36,20 +34,20 @@ def create_app():
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
 
     )
-    app.config.from_pyfile("config.py", silent=True)
+    new_app.config.from_pyfile("config.py", silent=True)
 
-    # ensure the instance folder exists
+    # ensure the /instance folder exists
     try:
-        os.makedirs(app.instance_path)
+        os.makedirs(new_app.instance_path)
     except OSError:
         pass
 
     # register the app into the sqlalchemy and marshmallow modules
-    db.init_app(app)
-    ma.init_app(app)
+    db.init_app(new_app)
+    ma.init_app(new_app)
 
-    # Initialize the app blueprint into the app
-    from flaskr.app import bp
-    app.register_blueprint(bp)
+    # Initialize the app blueprint into the new_app
+    from app import bp
+    new_app.register_blueprint(bp)
 
-    return app
+    return new_app

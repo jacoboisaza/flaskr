@@ -1,8 +1,8 @@
 """Bookmark Schema."""
 from marshmallow_sqlalchemy import auto_field
 
-from flaskr.app.models.bookmark import BookmarkModel
-from flaskr import ma
+from app.models.bookmark import BookmarkModel
+from app.app_factory import ma
 
 
 class BookmarkSchema(ma.SQLAlchemySchema):

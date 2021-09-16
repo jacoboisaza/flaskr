@@ -1,8 +1,7 @@
 """Family Model."""
-from flask import g
 from datetime import datetime
 
-from flaskr import db
+from app.app_factory import db
 
 
 class FamilyModel(db.Model):

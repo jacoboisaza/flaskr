@@ -1,8 +1,8 @@
 """Position Schema."""
 from marshmallow_sqlalchemy import auto_field
 
-from flaskr.app.models.position import PositionModel
-from flaskr import ma
+from app.models.position import PositionModel
+from app.app_factory import ma
 
 
 class PositionSchema(ma.SQLAlchemySchema):
