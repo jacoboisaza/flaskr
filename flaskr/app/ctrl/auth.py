@@ -14,10 +14,9 @@ from sqlalchemy.exc import (
 )
 import json
 
-from flaskr.models.user import UserModel
-from flaskr import db
-
-bp = Blueprint("auth", __name__, url_prefix="/auth")
+from flaskr.app.models.user import UserModel
+from flaskr.app.schemas.user import UserSchema
+from flaskr.app import bp
 
 
 def login_required(view):
@@ -26,7 +25,7 @@ def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
-            return redirect(url_for("auth.login"))
+            return redirect(url_for("app.login"))
 
         return view(**kwargs)
 
@@ -45,7 +44,9 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = UserModel.query.get(user_id).dump()
+        g.user = UserSchema().dump(
+            UserModel.query.get(user_id)
+        )
 
 
 @bp.route("/register", methods=("GET", "POST"))
@@ -62,12 +63,14 @@ def register():
                 password=request.form["password"]
             )
         except IntegrityError:
+            import traceback
+            traceback.print_exc()
             # The username was already taken, which caused the
             # commit to fail. Show a validation error.
             error = f"User {request.form['username']} is already registered."
         else:
             # Success, go to the login page.
-            return redirect(url_for("auth.login"))
+            return redirect(url_for("app.login"))
 
         flash(error)
 
@@ -92,7 +95,7 @@ def login():
             # store the user id in a new session and return to the index
             session.clear()
             session["user_id"] = user_model.id
-            return redirect(url_for("index"))
+            return redirect(url_for("app.index"))
 
         flash(error)
 
@@ -103,4 +106,4 @@ def login():
 def logout():
     """Clear the current session, including the stored user id."""
     session.clear()
-    return redirect(url_for("index"))
+    return redirect(url_for("app.index"))

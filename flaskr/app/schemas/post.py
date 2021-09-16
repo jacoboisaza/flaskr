@@ -3,7 +3,7 @@ from marshmallow_sqlalchemy import auto_field
 from marshmallow import fields
 from datetime import datetime as dt
 
-from flaskr.models.post import PostModel
+from flaskr.app.models.post import PostModel
 from flaskr import ma
 
 
@@ -30,6 +30,7 @@ class PostSchema(ma.SQLAlchemySchema):
             'user',
         )
     )
+    author_id = auto_field(load_only=True)
     author = ma.Nested(
         'UserSchema',
         only=(

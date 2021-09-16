@@ -1,6 +1,7 @@
 """User Model."""
-from flaskr import db
 from werkzeug.security import check_password_hash, generate_password_hash
+
+from flaskr import db
 
 
 class UserModel(db.Model):
@@ -23,11 +24,31 @@ class UserModel(db.Model):
     )
     posts = db.relationship(
         'PostModel',
-        backref="author"
+        back_populates="author",
+        cascade="all, delete-orphan"
     )
     bookmarks = db.relationship(
         'BookmarkModel',
-        backref='user'
+        back_populates='user',
+        cascade="all, delete-orphan"
+    )
+    position = db.relationship(
+        'PositionModel',
+        back_populates="person",
+        uselist=False
+    )
+    family_id = db.Column(
+        db.Integer,
+        db.ForeignKey('family.id')
+    )
+    family = db.relationship(
+        'FamilyModel',
+        back_populates="members"
+    )
+    family_to_lead = db.relationship(
+        'FamilyLeaderModel',
+        back_populates="leader",
+        uselist=False
     )
 
     @staticmethod
@@ -36,22 +57,11 @@ class UserModel(db.Model):
         if user_data.get("id"):
             return False
         user_data['password'] = generate_password_hash(user_data['password'])
-        db.session.add(
-            UserModel().load(user_data)
-        )
+        from flaskr.app.schemas.user import UserSchema
+        user_model = UserSchema().load(user_data)
+        db.session.add(user_model)
         db.session.commit()
 
     def verify_password(self, password):
         """Verify if this is the user's password."""
         return check_password_hash(self.password, password)
-
-    def dump(self):
-        """Serialize from model object to dict."""
-        from flaskr.schemas.user import UserSchema
-        return UserSchema().dump(self)
-
-    @staticmethod
-    def load(post_data):
-        """Deserialize from dict to model object."""
-        from flaskr.schemas.user import UserSchema
-        return UserSchema().load(post_data)

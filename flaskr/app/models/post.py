@@ -1,7 +1,6 @@
 """Post Model."""
 from flask import g
 from datetime import datetime
-from sqlalchemy import desc
 
 from flaskr import db
 
@@ -34,23 +33,25 @@ class PostModel(db.Model):
     )
     bookmarkers = db.relationship(
         'BookmarkModel',
-        backref='post'
+        back_populates='post',
+        cascade="all, delete-orphan"
     )
-
-    def dump(self):
-        """Serialize from model object to dict."""
-        from flaskr.schemas.post import PostSchema
-        return PostSchema().dump(self)
+    author = db.relationship(
+        'UserModel',
+        back_populates="posts"
+    )
 
     @staticmethod
     def add(**post_data):
         """Create a new post in DB and commit it."""
-        if PostModel().query.get(post_data.get("id")):
+        if post_data.get("id"):
             return False
         post_data['author_id'] = g.user["id"]
-        db.session.add(
-            PostModel().load(post_data)
+        from flaskr.app.schemas.post import PostSchema
+        post_model = PostSchema().load(
+            post_data
         )
+        db.session.add(post_model)
         db.session.commit()
 
     def update(self, title, body):
@@ -68,9 +69,3 @@ class PostModel(db.Model):
             return False
         db.session.delete(self)
         db.session.commit()
-
-    @staticmethod
-    def load(post_data):
-        """Deserialize from dict to model object."""
-        from flaskr.schemas.post import PostSchema
-        return PostSchema().load(post_data)

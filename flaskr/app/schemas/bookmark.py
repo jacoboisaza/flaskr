@@ -1,7 +1,7 @@
 """Bookmark Schema."""
 from marshmallow_sqlalchemy import auto_field
 
-from flaskr.models.bookmark import BookmarkModel
+from flaskr.app.models.bookmark import BookmarkModel
 from flaskr import ma
 
 
@@ -17,6 +17,7 @@ class BookmarkSchema(ma.SQLAlchemySchema):
 
     id = auto_field()
     created = auto_field()
+    user_id = auto_field(load_only=True)
     user = ma.Nested(
         "UserSchema",
         only=(
@@ -24,6 +25,7 @@ class BookmarkSchema(ma.SQLAlchemySchema):
             'username',
         )
     )
+    post_id = auto_field(load_only=True)
     post = ma.Nested(
         "PostSchema",
         only=(

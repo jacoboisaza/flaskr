@@ -11,30 +11,51 @@ from flask import (
 from werkzeug.exceptions import abort
 import json
 
-from flaskr.models.post import PostModel
-from flaskr.schemas.post import PostSchema
-from flaskr.models.user import UserModel
-from flaskr.schemas.user import UserSchema
-from flaskr.models.bookmark import BookmarkModel
-from flaskr.schemas.bookmark import BookmarkSchema
-from flaskr.auth import login_required
-
-bp = Blueprint("blog", __name__)
+from flaskr.app.models.family_leader import FamilyLeaderModel
+from flaskr.app.schemas.family_leader import FamilyLeaderSchema
+from flaskr.app.models.family import FamilyModel
+from flaskr.app.schemas.family import FamilySchema
+from flaskr.app.models.position import PositionModel
+from flaskr.app.schemas.position import PositionSchema
+from flaskr.app.models.post import PostModel
+from flaskr.app.schemas.post import PostSchema
+from flaskr.app.models.user import UserModel
+from flaskr.app.schemas.user import UserSchema
+from flaskr.app.models.bookmark import BookmarkModel
+from flaskr.app.schemas.bookmark import BookmarkSchema
+from flaskr.app.ctrl.auth import login_required
+from flaskr.app import bp
 
 
 @bp.route("/")
 def index():
     """Show all the posts, most recent first."""
+    family_leaders = FamilyLeaderSchema(many=True).dump(
+        FamilyLeaderModel.query.all()
+    )
+    families = FamilySchema(many=True).dump(
+        FamilyModel.query.all()
+    )
+    positions = PositionSchema(many=True).dump(
+        PositionModel.query.all()
+    )
     posts = PostSchema(many=True).dump(
         PostModel.query.all()
+    )
+    users = UserSchema(many=True).dump(
+        UserModel.query.all()
     )
     bookmarks = BookmarkSchema(many=True).dump(
         BookmarkModel.query.all()
     )
     return render_template(
         "blog/index.html",
-        posts=posts,
-        bookmarks=json.dumps(sorted(bookmarks), indent=4)
+        family_leaders=json.dumps(family_leaders, indent=4),
+        families=json.dumps(families, indent=4),
+        positions=json.dumps(positions, indent=4),
+        posts=json.dumps(posts, indent=4),
+        users=json.dumps(users, indent=4),
+        bookmarks=json.dumps(bookmarks, indent=4)
     )
 
 
@@ -78,7 +99,7 @@ def create():
                 title=title,
                 body=body
             )
-            return redirect(url_for("blog.index"))
+            return redirect(url_for("app.index"))
 
     return render_template("blog/create.html")
 
@@ -94,9 +115,10 @@ def update(post_id):
             title=request.form["title"],
             body=request.form["body"]
         )
-        return redirect(url_for("blog.index"))
+        return redirect(url_for("app.index"))
 
-    return render_template("blog/update.html", post=post_model.dump())
+    post = PostSchema().dump(post_model)
+    return render_template("blog/update.html", post=post)
 
 
 @bp.route("/<int:post_id>/delete", methods=("POST",))
@@ -108,4 +130,4 @@ def delete(post_id):
     author of the post.
     """
     get_post(post_id).delete()
-    return redirect(url_for("blog.index"))
+    return redirect(url_for("app.index"))

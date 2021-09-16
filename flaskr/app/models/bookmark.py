@@ -22,20 +22,17 @@ class BookmarkModel(db.Model):
     )
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey('user.id')
+        db.ForeignKey('user.id'),
     )
     post_id = db.Column(
         db.Integer,
-        db.ForeignKey('post.id')
+        db.ForeignKey('post.id'),
     )
-
-    def dump(self):
-        """Serialize from model object to dict."""
-        from flaskr.schemas.bookmark import BookmarkSchema
-        return BookmarkSchema().dump(self)
-
-    @staticmethod
-    def load(bookmark_data):
-        """Deserialize from dict to model object."""
-        from flaskr.schemas.bookmark import BookmarkSchema
-        return BookmarkSchema().load(bookmark_data)
+    user = db.relationship(
+        'UserModel',
+        back_populates='bookmarks',
+    )
+    post = db.relationship(
+        'PostModel',
+        back_populates='bookmarkers'
+    )

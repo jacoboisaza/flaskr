@@ -8,6 +8,11 @@ from flask_marshmallow import Marshmallow
 db = SQLAlchemy()
 ma = Marshmallow()
 
+# Explicit models and schemas registration after instantiate the sqlalchemy and marshmallow modules.
+from flaskr.app import models
+from flaskr.app import schemas
+from flaskr.app import ctrl
+
 
 def create_app():
     """Create and configure an instance of the Flask application."""
@@ -39,27 +44,12 @@ def create_app():
     except OSError:
         pass
 
-    # register the database commands
+    # register the app into the sqlalchemy and marshmallow modules
     db.init_app(app)
-
-    # register the app into the sqlalchemy module
     ma.init_app(app)
 
-    # apply the blueprints to the app
-    from flaskr import auth, blog
-
-    app.register_blueprint(auth.bp)
-    app.register_blueprint(blog.bp)
-
-    # make url_for('index') == url_for('blog.index')
-    # in another app, you might define a separate main index here with
-    # app.route, while giving the blog blueprint a url_prefix, but for
-    # the tutorial the blog will be the main index
-    app.add_url_rule("/", endpoint="index")
+    # Initialize the app blueprint into the app
+    from flaskr.app import bp
+    app.register_blueprint(bp)
 
     return app
-
-
-# Force class models and schemas registration at startup.
-from flaskr import models
-from flaskr import schemas
