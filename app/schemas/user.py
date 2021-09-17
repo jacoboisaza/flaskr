@@ -2,7 +2,7 @@
 from marshmallow_sqlalchemy import auto_field
 
 from app.models.user import UserModel
-from app.app_factory import ma
+from app import ma
 
 
 class UserSchema(ma.SQLAlchemySchema):

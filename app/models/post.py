@@ -2,7 +2,7 @@
 from flask import g
 from datetime import datetime
 
-from app.app_factory import db
+from app import db
 
 
 class PostModel(db.Model):

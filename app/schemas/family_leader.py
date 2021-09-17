@@ -2,7 +2,7 @@
 from marshmallow_sqlalchemy import auto_field
 
 from app.models.family_leader import FamilyLeaderModel
-from app.app_factory import ma
+from app import ma
 
 
 class FamilyLeaderSchema(ma.SQLAlchemySchema):

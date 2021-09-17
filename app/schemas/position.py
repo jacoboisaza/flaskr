@@ -2,7 +2,7 @@
 from marshmallow_sqlalchemy import auto_field
 
 from app.models.position import PositionModel
-from app.app_factory import ma
+from app import ma
 
 
 class PositionSchema(ma.SQLAlchemySchema):

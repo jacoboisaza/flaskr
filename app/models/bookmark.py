@@ -1,7 +1,7 @@
 """Bookmark Model."""
 from datetime import datetime
 
-from app.app_factory import db
+from app import db
 
 
 class BookmarkModel(db.Model):

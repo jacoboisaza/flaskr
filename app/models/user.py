@@ -1,7 +1,7 @@
 """User Model."""
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app.app_factory import db
+from app import db
 
 
 class UserModel(db.Model):
