@@ -1,11 +1,12 @@
 """Blog Module."""
 from flask import (
     flash,
-    g,
+    url_for,
     redirect,
     render_template,
+    g,
     request,
-    url_for
+    current_app as app
 )
 from werkzeug.exceptions import abort
 import json
@@ -23,10 +24,9 @@ from app.schemas.user import UserSchema
 from app.models.bookmark import BookmarkModel
 from app.schemas.bookmark import BookmarkSchema
 from app.ctrl.auth import login_required
-from app import bp
 
 
-@bp.route("/")
+@app.route("/")
 def index():
     """Show all the posts, most recent first."""
     family_leaders = FamilyLeaderSchema(many=True).dump(
@@ -79,7 +79,7 @@ def get_post(post_id, check_author=True):
     return post_model
 
 
-@bp.route("/create", methods=("GET", "POST"))
+@app.route("/create", methods=("GET", "POST"))
 @login_required
 def create():
     """Create a new post for the current user."""
@@ -98,12 +98,12 @@ def create():
                 title=title,
                 body=body
             )
-            return redirect(url_for("app.index"))
+            return redirect(url_for("index"))
 
     return render_template("blog/create.html")
 
 
-@bp.route("/<int:post_id>/update", methods=("GET", "POST"))
+@app.route("/<int:post_id>/update", methods=("GET", "POST"))
 @login_required
 def update(post_id):
     """Update a post if the current user is the author."""
@@ -114,13 +114,13 @@ def update(post_id):
             title=request.form["title"],
             body=request.form["body"]
         )
-        return redirect(url_for("app.index"))
+        return redirect(url_for("index"))
 
     post = PostSchema().dump(post_model)
     return render_template("blog/update.html", post=post)
 
 
-@bp.route("/<int:post_id>/delete", methods=("POST",))
+@app.route("/<int:post_id>/delete", methods=("POST",))
 @login_required
 def delete(post_id):
     """Delete a post.
@@ -129,4 +129,4 @@ def delete(post_id):
     author of the post.
     """
     get_post(post_id).delete()
-    return redirect(url_for("app.index"))
+    return redirect(url_for("index"))

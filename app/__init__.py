@@ -7,7 +7,6 @@ from flask_marshmallow import Marshmallow
 
 # Explicit instantiate plugins and blueprint
 # before impor models and schemas wich needs it.
-bp = Blueprint("app", __name__)
 db = SQLAlchemy()
 ma = Marshmallow()
 
@@ -46,10 +45,8 @@ def app_factory():
     with new_app.app_context():
 
         # Import my app modules
-        from app import models
-        from app import schemas
-        from app import ctrl
-
-        new_app.register_blueprint(bp)
+        from . import models
+        from . import schemas
+        from . import ctrl
 
     return new_app

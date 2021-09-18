@@ -1,19 +1,21 @@
 """Authentication Module."""
 import functools
-from flask import flash
-from flask import g
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import session
-from flask import url_for
+from flask import (
+    flash,
+    url_for,
+    redirect,
+    render_template,
+    g,
+    request,
+    session,
+    current_app as app
+)
 from sqlalchemy.exc import (
     IntegrityError
 )
 
 from app.models.user import UserModel
 from app.schemas.user import UserSchema
-from app import bp
 
 
 def login_required(view):
@@ -22,14 +24,14 @@ def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
-            return redirect(url_for("app.login"))
+            return redirect(url_for("login"))
 
         return view(**kwargs)
 
     return wrapped_view
 
 
-@bp.before_app_request
+@app.before_request
 def load_logged_in_user():
     """
     Request intercerptor to load user data from session to Flask Global.
@@ -46,7 +48,7 @@ def load_logged_in_user():
         )
 
 
-@bp.route("/register", methods=("GET", "POST"))
+@app.route("/register", methods=("GET", "POST"))
 def register():
     """Register a new user.
 
@@ -67,14 +69,14 @@ def register():
             error = f"User {request.form['username']} is already registered."
         else:
             # Success, go to the login page.
-            return redirect(url_for("app.login"))
+            return redirect(url_for("login"))
 
         flash(error)
 
     return render_template("auth/register.html")
 
 
-@bp.route("/login", methods=("GET", "POST"))
+@app.route("/login", methods=("GET", "POST"))
 def login():
     """Log in a registered user by adding the user id to the session."""
     if request.method == "POST":
@@ -92,15 +94,15 @@ def login():
             # store the user id in a new session and return to the index
             session.clear()
             session["user_id"] = user_model.id
-            return redirect(url_for("app.index"))
+            return redirect(url_for("index"))
 
         flash(error)
 
     return render_template("auth/login.html")
 
 
-@bp.route("/logout")
+@app.route("/logout")
 def logout():
     """Clear the current session, including the stored user id."""
     session.clear()
-    return redirect(url_for("app.index"))
+    return redirect(url_for("index"))
